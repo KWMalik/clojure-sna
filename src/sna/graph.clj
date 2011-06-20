@@ -10,7 +10,11 @@
 (defprotocol Graph
   "Defines a protocal for a Graph type"
   (add-node [graph node] "Adds a new node to the graph")
-  (add-edge [graph u v] "Adds a new edge to the graph")
+  (add-edge-with-attr-map
+    [graph u v attrs] "Adds a new edge with given attributes map")
+  (add-edge
+    [graph u v]
+    [graph u v & attrs] "Adds a new edge to the graph")
   (get-edge [graph u v] "Returns the edge matching the endpoints")
   (number-of-nodes [graph] "Returns the number of nodes in the graph"))
 
@@ -25,13 +29,21 @@
       (assoc graph node {})))
 
   ;; Add Edge
+  (add-edge-with-attr-map [graph u v attrs]
+    (if (contains? graph u)
+      (let [neighbors (assoc (graph u) v attrs)]
+        (assoc graph u neighbors))
+      (assoc graph u {v attrs})))
+    
+
   ;; TODO: If the edge already exists do we want to overwite the
   ;;       attributes within it or merge them?
   (add-edge [graph u v]
-    (if (contains? graph u)
-      (let [neighbors (assoc (graph u) v {})]
-        (assoc graph u neighbors))
-      (assoc graph u {v {}})))
+    (add-edge-with-attr-map graph u v {}))
+
+  (add-edge [graph u v & keyvals]
+    (let [attrs (apply hash-map keyvals)]
+      (add-edge-with-attr-map graph u v attrs)))
 
   ;; Get edge (attributes)
   (get-edge [graph u v]
