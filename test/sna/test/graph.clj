@@ -9,65 +9,65 @@
   (:use [sna.graph])
   (:use [clojure.test]))
 
-(deftest test-make-sample-graph
+(def test-graph (make-graph 1 2 3 4 3 5))
+
+(deftest test-make-graph
   (let [correct-graph  {1 {2 {}},
                         3 {4 {}, 5 {}}}
-        sample-graph   (make-graph 1 2 3 4 3 5)
-        error-msg      (str "Graph '" sample-graph
+        error-msg      (str "Graph '" test-graph
                             "' does not equal '" correct-graph "'")]
-    (is (= sample-graph correct-graph) error-msg)))
+    (is (= test-graph correct-graph) error-msg)))
 
-(defn test-add-edge [correct-graph fn]
-  (let [sample-graph (fn (make-graph 1 2 3 4 3 5))
-        error-msg    (str "Graph '" sample-graph "' does not equal '"
+(defn test-add-edge [correct-graph test-graph]
+  (let [error-msg    (str "Graph '" test-graph "' does not equal '"
                           correct-graph "'")]
-    (is (= sample-graph correct-graph) error-msg)))
+    (is (= test-graph correct-graph) error-msg)))
 
 (deftest test-add-edge-with-attr-map
   (let [correct-graph {1 {2 {}}
                        3 {4 {}, 5 {}}
                        6 {7 {}, 8 {:weight 10}}}
-        fn            (fn [g] (-> g
-                                  (add-edge 6 7)
-                                  (add-edge-with-attr-map 6 8 {:weight 10})))]
-    (test-add-edge correct-graph fn)))
+        test-graph  (-> test-graph
+                        (add-edge 6 7)
+                        (add-edge-with-attr-map 6 8 {:weight 10}))]
+    (test-add-edge correct-graph test-graph)))
   
 (deftest test-add-edge-1
   (let [correct-graph {1 {2 {}}
                        3 {4 {}, 5 {}}
                        6 {7 {}, 8 {}}}
-        fn            (fn [g] (-> g
-                                  (add-edge 6 7)
-                                  (add-edge 6 8)))]
-    (test-add-edge correct-graph fn)))
+        test-graph  (-> test-graph
+                        (add-edge 6 7)
+                        (add-edge 6 8))]
+    (test-add-edge correct-graph test-graph)))
 
 (deftest test-add-edge-2
   (let [correct-graph {1 {2 {}}
                        3 {4 {}, 5 {}}
                        6 {7 {}, 8 {:weight 10}}}
-        fn            (fn [g] (-> g
-                                  (add-edge 6 7)
-                                  (add-edge 6 8 :weight 10)))]
-    (test-add-edge correct-graph fn)))
+        test-graph  (-> test-graph
+                        (add-edge 6 7)
+                        (add-edge 6 8 :weight 10))]
+    (test-add-edge correct-graph test-graph)))
 
 (deftest test-add-node
   (let [correct-graph   {1 {2 {}}
                          3 {4 {}, 5 {}}
                          6 {}
                          7 {}}
-        sample-graph    (make-graph 1 2 3 4 3 5)
-        sample-graph    (add-node sample-graph 6)
-        sample-graph    (add-node sample-graph 7)
-        error-msg       (str "Graph '" sample-graph "' does not equal '"
+        test-graph    (-> test-graph
+                          (add-node 6)
+                          (add-node 7))
+        error-msg       (str "Graph '" test-graph "' does not equal '"
                              correct-graph "'")]
-    (is (= sample-graph correct-graph) error-msg)))
+    (is (= test-graph correct-graph) error-msg)))
 
 (deftest test-number-of-nodes
-  (let [sample-graph            {1 {2 {}}
+  (let [graph                   {1 {2 {}}
                                  3 {4 {}, 5 {}}
                                  6 {}
                                  7 {}}
-        actual-number-of-nodes  (number-of-nodes sample-graph)
+        actual-number-of-nodes  (number-of-nodes graph)
         correct-number-of-nodes 7
         error-msg               (str "Number of nodes in sample graph is '"
                                      actual-number-of-nodes "', expected '"
