@@ -1,5 +1,4 @@
-clojure-sna is a Social Network Analysis library for the Clojure
-language.
+A Social Network Analysis library for the Clojure language.
 
 An Example
 ----------
@@ -16,9 +15,9 @@ Here's a very simple example of a REPL session with the SNA library.
     #'user/g
     user=> g
     {6 {7 {:weight 10}}, 3 {5 {}, 4 {}}, 1 {2 {}}}
-    user=> (get-edge 1 2)
+    user=> (get-edge g 1 2)
     {}
-    user=> (get-edge 6 7)
+    user=> (get-edge g 6 7)
     {:weight 10}
     user=> (:weight (get-edge g 6 7))
     10
